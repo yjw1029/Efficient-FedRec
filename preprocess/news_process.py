@@ -12,14 +12,21 @@ def parse_args():
     parser.add_argument(
         "--raw_path",
         type=str,
-        default="../raw/mind",
+        default="../raw/",
         help="path to raw mind dataset or parsed ",
     )
     parser.add_argument(
         "--out_path",
         type=str,
-        default="../raw/mind/preprocess",
+        default="../data/",
         help="path to save processed dataset, default in ../raw/mind/preprocess",
+    )
+    parser.add_argument(
+        "--data",
+        type=str,
+        default="mind",
+        choices=["mind", "adressa"],
+        help="decide which dataset for preprocess"
     )
     parser.add_argument(
         "--npratio",
@@ -30,7 +37,7 @@ def parse_args():
         "--max_his_len", type=int, default=50
     )
     parser.add_argument("--min_word_cnt", type=int, default=3)
-    parser.add_argument("--min_title_len", type=int, default=30)
+    parser.add_argument("--max_title_len", type=int, default=30)
 
     args = parser.parse_args()
     return args
@@ -38,20 +45,27 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    adressa_path = Path(args.adressa_path)
-    out_path = Path(args.out_path)
+    raw_path = Path(args.raw_path) / args.data
+    out_path = Path(args.out_path) / args.data
 
-    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+    if not raw_path.is_dir():
+        raise ValueError(f"{raw_path.name} does not exist.")
 
+    out_path.mkdir(exist_ok=True, parents=True)
 
+    if args.data == "mind":
+        model_type = "bert-base-uncased"
+    else:
+        model_type = "NbAiLab/nb-bert-base"
 
-    tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+    tokenizer = BertTokenizer.from_pretrained(model_type)
+
 
     # news preprocess
     nid2index = {"<unk>": 0}
     news_index = [[[0] * args.max_title_len, [0] * args.max_title_len]]
 
-    for l in tqdm(open(data_path / "train" / "news.tsv", "r", encoding='utf-8')):
+    for l in tqdm(open(raw_path / "train" / "news.tsv", "r", encoding='utf-8')):
         nid, vert, subvert, title, abst, url, ten, aen = l.strip("\n").split("\t")
         if nid in nid2index:
             continue
@@ -66,7 +80,7 @@ if __name__ == "__main__":
         news_index.append([tokens.input_ids, tokens.attention_mask])
 
 
-    for l in tqdm(open(data_path / "valid" / "news.tsv", "r", encoding='utf-8')):
+    for l in tqdm(open(raw_path / "valid" / "news.tsv", "r", encoding='utf-8')):
         nid, vert, subvert, title, abst, url, ten, aen = l.strip("\n").split("\t")
         if nid in nid2index:
             continue
@@ -86,11 +100,11 @@ if __name__ == "__main__":
     news_index = np.array(news_index)
     np.save(out_path / "bert_news_index", news_index)
 
-    if os.path.exists(data_path / "test"):
+    if os.path.exists(raw_path / "test"):
         nid2index = {"<unk>": 0}
         news_index = [[[0] * args.max_title_len, [0] * args.max_title_len]]
 
-        for l in tqdm(open(data_path / "test" / "news.tsv", "r", encoding='utf-8')):
+        for l in tqdm(open(raw_path / "test" / "news.tsv", "r", encoding='utf-8')):
             nid, vert, subvert, title, abst, url, ten, aen = l.strip("\n").split("\t")
             if nid in nid2index:
                 continue
