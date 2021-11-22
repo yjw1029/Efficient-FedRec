@@ -50,8 +50,8 @@ python main.py --data adressa
 
 
 ## Results
-MIND dataset
-
+Wandb result on MIND dataset (validation results, need to upload prediction results to condalab for test results )
+![](./.figure/mind-result.png)
 
 ## Citing
 If you want to cite Efficient-Fedrec in your papers (much appreciated!), you can cite it as follows:
