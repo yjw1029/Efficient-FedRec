@@ -4,6 +4,7 @@ checkpoint/
 wandb/
 amlt/
 .amltconfig
+config.yaml
 
 raw/*/
 data/*
