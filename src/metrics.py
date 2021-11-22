@@ -1,5 +1,5 @@
 import numpy as np
-import tqdm
+from tqdm import tqdm
 from sklearn.metrics import roc_auc_score
 
 def dcg_score(y_true, y_score, k=10):

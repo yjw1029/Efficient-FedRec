@@ -24,13 +24,13 @@ def parse_args():
     parser.add_argument(
         "--data_path",
         type=str,
-        default="../data/",
+        default=os.getenv("AMLT_DATA_DIR", "../data"),
         help="path to downloaded raw adressa dataset",
     )
     parser.add_argument(
         "--out_path",
         type=str,
-        default="../output/",
+        default=os.getenv("AMLT_OUTPUT_DIR", "../output"),
         help="path to downloaded raw adressa dataset",
     )
     parser.add_argument(
