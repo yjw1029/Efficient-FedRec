@@ -1,6 +1,8 @@
 .ipynb_checkpoints/
 __pycache__/
 checkpoint/
+wandb/
 
 raw/*/
 data/*
+output/
