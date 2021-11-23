@@ -14,6 +14,9 @@ then
     wget https://mind201910small.blob.core.windows.net/release/MINDsmall_dev.zip -P $DIR/mind/valid
     unzip $DIR/mind/valid/MINDsmall_dev.zip -d $DIR/mind/valid/
     rm $DIR/mind/valid/MINDsmall_dev.zip
+    wget https://mind201910small.blob.core.windows.net/release/MINDlarge_test.zip -P $DIR/mind/test
+    unzip $DIR/mind/test/MINDlarge_test.zip -d $DIR/mind/test/
+    rm $DIR/mind/test/MINDlarge_test.zip
 elif [ $DATASET == "adressa" ]
 then
     mkdir $DIR/adressa

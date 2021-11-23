@@ -25,7 +25,7 @@ class TrainDataset(Dataset):
     
     def __getitem__(self, idx):
         # pos, neg, his, neg_his
-        pos, neg, his, _ = self.samples[idx]
+        _, pos, neg, his, _ = self.samples[idx]
         neg = newsample(neg, self.args.npratio)
         candidate_news = np.array([self.nid2index[n] for n in [pos] + neg])
         candidate_news_vecs = self.agg.get_news_vecs(candidate_news)
@@ -75,7 +75,7 @@ class UserDataset(Dataset):
         return len(self.samples)
     
     def __getitem__(self, idx):
-        poss, negs, his, _ = self.samples[idx]
+        _, poss, negs, his, _ = self.samples[idx]
         his = [self.nid2index[n] for n in his] + [0] * (self.args.max_his_len - len(his))
         his = self.news_vecs[his]
         return his

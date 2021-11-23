@@ -33,7 +33,7 @@ def compute_amn(y_true, y_score):
 def evaluation_split(news_vecs, user_vecs, samples, nid2index):
     all_rslt = []
     for i in tqdm(range(len(samples))):
-        poss, negs, _, _ = samples[i]
+        _, poss, negs, _, _ = samples[i]
         user_vec = user_vecs[i]
         y_true = [1] * len(poss) + [0] * len(negs)
         news_ids = [nid2index[i] for i in poss + negs]

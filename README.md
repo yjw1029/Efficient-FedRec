@@ -23,7 +23,8 @@ wandb
 ```bash
 cd raw
 chmod +x download.sh
-./download.show
+./download.sh mind .
+./download.sh adressa .
 ```
 * Preprocess datasets 
 ```bash
@@ -45,13 +46,28 @@ python user_process.py --data adressa
 # You may need to configure your wandb account first
 cd src
 python main.py --data mind
-python main.py --data adressa
+# get prediction result of the best checkpoint and submit on condalab
+python main.py --data mind --mode predict
+
+# train on adressa
+python main.py --data adressa --max_train_steps 150 --validation_step 10 --bert_type NbAiLab/nb-bert-base
+# test on adressa
+python main.py --data adressa --mode test --bert_type NbAiLab/nb-bert-base
 ```
 
 
 ## Results
+
+### MIND 
 Wandb result on MIND dataset (validation results, need to upload prediction results to condalab for test results )
 ![](./.figure/mind-result.png)
+
+Wandb result on adressa dataset.
+![](./figure/adressa-result.png)
+Test result is as
+```
+test auc: 0.7796, mrr: 0.4332, ndcg5: 0.4458, ndcg10: 0.5167
+```
 
 ## Citing
 If you want to cite Efficient-Fedrec in your papers (much appreciated!), you can cite it as follows:

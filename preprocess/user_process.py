@@ -53,30 +53,35 @@ if __name__ == "__main__":
     for l in tqdm(open(raw_path / "train" / "behaviors.tsv", "r")):
         imp_id, uid, t, his, imprs = l.strip("\n").split("\t")
         his = his.split()
-        tsp = t
         imprs = [i.split("-") for i in imprs.split(" ")]
         neg_imp = [i[0] for i in imprs if i[1] == "0"]
         pos_imp = [i[0] for i in imprs if i[1] == "1"]
-        user_imprs[uid].append([tsp, his, pos_imp, neg_imp, 0, uid])
+        user_imprs[uid].append([imp_id, his, pos_imp, neg_imp, 0, uid])
 
     for l in tqdm(open(raw_path / "valid" / "behaviors.tsv", "r")):
         imp_id, uid, t, his, imprs = l.strip("\n").split("\t")
         his = his.split()
-        tsp = t
         imprs = [i.split("-") for i in imprs.split(" ")]
         neg_imp = [i[0] for i in imprs if i[1] == "0"]
         pos_imp = [i[0] for i in imprs if i[1] == "1"]
-        user_imprs[uid].append([tsp, his, pos_imp, neg_imp, 1, uid])
+        user_imprs[uid].append([imp_id, his, pos_imp, neg_imp, 1, uid])
 
     if os.path.exists(raw_path / "test"):
-        for l in tqdm(open(raw_path / "test" / "behaviors.tsv", "r")):
-            imp_id, uid, t, his, imprs = l.strip("\n").split("\t")
-            his = his.split()
-            tsp = t
-            imprs = [i.split("-") for i in imprs.split(" ")]
-            neg_imp = [i[0] for i in imprs if i[1] == "0"]
-            pos_imp = [i[0] for i in imprs if i[1] == "1"]
-            user_imprs[uid].append([tsp, his, pos_imp, neg_imp, 2, uid])
+        if args.data == "adressa":
+            for l in tqdm(open(raw_path / "test" / "behaviors.tsv", "r")):
+                imp_id, uid, t, his, imprs = l.strip("\n").split("\t")
+                his = his.split()
+                imprs = [i.split("-") for i in imprs.split(" ")]
+                neg_imp = [i[0] for i in imprs if i[1] == "0"]
+                pos_imp = [i[0] for i in imprs if i[1] == "1"]
+                user_imprs[uid].append([imp_id, his, pos_imp, neg_imp, 2, uid])
+        else:
+            # MIND test dataset do not contains labels, need to test on condalab
+            for l in tqdm(open(raw_path / "test" / "behaviors.tsv", "r")):
+                imp_id, uid, t, his, imprs = l.strip("\n").split("\t")
+                his = his.split()
+                imprs = imprs.split(" ")
+                user_imprs[uid].append([imp_id, his, imprs, [], 2, uid])
 
 
     train_samples = []
@@ -87,17 +92,17 @@ if __name__ == "__main__":
     index = 0
     for uid in tqdm(user_imprs):
         for impr in user_imprs[uid]:
-            tsp, his, poss, negs, is_valid, uid = impr
+            imp_id, his, poss, negs, is_valid, uid = impr
             his = his[-args.max_his_len:]
             if is_valid == 0:
                 for pos in poss:
-                    train_samples.append([pos, negs, his, uid])
+                    train_samples.append([imp_id, pos, negs, his, uid])
                     user_indices[uid].append(index)
                     index += 1
             elif is_valid == 1:
-                valid_samples.append([poss, negs, his, uid])
+                valid_samples.append([imp_id, poss, negs, his, uid])
             else:
-                test_samples.append([poss, negs, his, uid])
+                test_samples.append([imp_id, poss, negs, his, uid])
 
     print(len(train_samples), len(valid_samples), len(test_samples))
 
