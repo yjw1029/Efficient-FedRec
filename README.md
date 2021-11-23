@@ -64,7 +64,7 @@ Wandb result on MIND dataset (validation results, need to upload prediction resu
 
 ## Adressa
 Wandb result on adressa dataset.
-![](./figure/adressa-result.png)
+![](./.figure/adressa-result.png)
 Test result is as
 ```
 test auc: 0.7796, mrr: 0.4332, ndcg5: 0.4458, ndcg10: 0.5167
