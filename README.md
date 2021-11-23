@@ -62,6 +62,7 @@ python main.py --data adressa --mode test --bert_type NbAiLab/nb-bert-base
 Wandb result on MIND dataset (validation results, need to upload prediction results to condalab for test results )
 ![](./.figure/mind-result.png)
 
+## Adressa
 Wandb result on adressa dataset.
 ![](./figure/adressa-result.png)
 Test result is as
