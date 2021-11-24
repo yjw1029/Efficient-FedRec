@@ -59,13 +59,16 @@ python main.py --data adressa --mode test --bert_type NbAiLab/nb-bert-base
 ## Results
 
 ### MIND 
-Wandb result on MIND dataset (validation results, need to upload prediction results to condalab for test results )
+Wandb result on MIND dataset
 ![](./.figure/mind-result.png)
+Zip the prediction.txt file and upload to MIND competition. Test result is
+![](./.figure/mind-leaderboard.png) 
+
 
 ## Adressa
-Wandb result on adressa dataset.
+Wandb result on Adressa dataset.
 ![](./.figure/adressa-result.png)
-Test result is as
+Test result is
 ```
 test auc: 0.7796, mrr: 0.4332, ndcg5: 0.4458, ndcg10: 0.5167
 ```
