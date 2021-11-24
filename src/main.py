@@ -57,7 +57,7 @@ def parse_args():
         default=20,
         help="randomly sample neg_num negative impression for every positive behavior",
     )
-    parser.add_argument("--max_train_steps", type=int, default=1500)
+    parser.add_argument("--max_train_steps", type=int, default=2000)
     parser.add_argument("--validation_steps", type=int, default=100)
     parser.add_argument("--name", type=str, default="efficient-fedrec")
 
@@ -273,18 +273,23 @@ def predict(args, data_path, out_model_path, out_path, device):
         user_vecs.append(user_vec)
     user_vecs = np.concatenate(user_vecs)
 
-    with open(out_path / 'prediction.txt', 'w') as f:
-        for i in tqdm(range(len(test_sam))):
-            impr_id, poss, negs, _, _ = test_sam[i]
-            user_vec = user_vecs[i]
-            news_ids = [test_nid2index[i] for i in poss + negs]
-            news_vec = news_vecs[news_ids]
-            y_score = np.multiply(news_vec, user_vec)
-            y_score = np.sum(y_score, axis=1)
+    pred_lines = []
+    for i in tqdm(range(len(test_sam))):
+        impr_id, poss, negs, _, _ = test_sam[i]
+        user_vec = user_vecs[i]
+        news_ids = [test_nid2index[i] for i in poss + negs]
+        news_vec = news_vecs[news_ids]
+        y_score = np.multiply(news_vec, user_vec)
+        y_score = np.sum(y_score, axis=1)
 
-            pred_rank = (np.argsort(np.argsort(y_score)[::-1]) + 1).tolist()
-            pred_rank = '[' + ','.join([str(i) for i in pred_rank]) + ']'
-            f.write(' '.join([impr_id, pred_rank])+ '\n')
+        pred_rank = (np.argsort(np.argsort(y_score)[::-1]) + 1).tolist()
+        pred_rank = '[' + ','.join([str(i) for i in pred_rank]) + ']'
+        pred_lines.append((int(impr_id), ' '.join([impr_id, pred_rank])+ '\n'))
+
+    pred_lines.sort(key=lambda x: x[0])
+    pred_lines = [x[1] for x in pred_lines]
+    with open(out_path / 'prediction.txt', 'w') as f:
+        f.writelines(pred_lines)
 
 
 if __name__ == "__main__":
