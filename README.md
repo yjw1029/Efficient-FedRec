@@ -8,7 +8,7 @@ Experiments on two public dataset show the effectiveness of our method.
 
 
 ## Environment
-pip install -r requirements.txt
+Requirments
 ```
 numpy
 torch
