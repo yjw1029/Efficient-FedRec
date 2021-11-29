@@ -50,7 +50,7 @@ python main.py --data mind
 python main.py --data mind --mode predict
 
 # train on adressa
-python main.py --data adressa --max_train_steps 150 --validation_step 10 --bert_type NbAiLab/nb-bert-base
+python main.py --data adressa --max_train_steps 500 --validation_step 10 --bert_type NbAiLab/nb-bert-base
 # test on adressa
 python main.py --data adressa --mode test --bert_type NbAiLab/nb-bert-base
 ```
@@ -70,7 +70,7 @@ Wandb result on Adressa dataset.
 ![](./.figure/adressa-result.png)
 Test result is
 ```
-test auc: 0.7796, mrr: 0.4332, ndcg5: 0.4458, ndcg10: 0.5167
+test auc: 0.7980, mrr: 0.4637, ndcg5: 0.4852, ndcg10: 0.5497
 ```
 
 ## Citing
