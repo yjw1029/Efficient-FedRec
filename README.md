@@ -11,8 +11,8 @@ Experiments on two public dataset show the effectiveness of our method.
 Requirments
 ```
 numpy
-torch
-transformers
+torch==1.9.1
+transformers==4.12.5
 tqdm
 sklearn
 wandb

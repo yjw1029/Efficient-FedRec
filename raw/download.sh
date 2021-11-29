@@ -21,7 +21,7 @@ elif [ $DATASET == "adressa" ]
 then
     mkdir $DIR/adressa
     mkdir $DIR/adressa/raw
-    wget http://reclab.idi.ntnu.no/dataset/one_week.tar.gz -P $DIR/adressa/raw
+    wget --no-check-certificate http://reclab.idi.ntnu.no/dataset/one_week.tar.gz -P $DIR/adressa/raw
     tar zvfx $DIR/adressa/raw/one_week.tar.gz -C $DIR/adressa/raw
     rm $DIR/adressa/raw/one_week.tar.gz
 fi
