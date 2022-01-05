@@ -49,7 +49,7 @@ def parse_args():
     )
     parser.add_argument("--user_lr", type=float, default=0.00005)
     parser.add_argument("--news_lr", type=float, default=0.00005)
-    parser.add_argument("--user_num", type=float, default=50)
+    parser.add_argument("--user_num", type=int, default=50)
     parser.add_argument("--max_his_len", type=float, default=50)
     parser.add_argument(
         "--npratio",
