@@ -1,8 +1,5 @@
 import torch
 from torch import nn
-import torch.nn.functional as F
-from transformers import BertModel
-
 import numpy as np
 
 class ScaledDotProductAttention(nn.Module):
@@ -40,7 +37,7 @@ class MultiHeadAttention(nn.Module):
                 nn.init.xavier_uniform_(m.weight, gain=1)
                 
     def forward(self, Q, K, V, attn_mask=None):
-        batch_size, seq_len, _ =  Q.size()
+        batch_size, seq_len, _ = Q.size()
         
         q_s = self.W_Q(Q).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
         k_s = self.W_K(K).view(batch_size, -1, self.n_heads, self.d_k).transpose(1,2)
@@ -56,12 +53,23 @@ class MultiHeadAttention(nn.Module):
 
 
 class AdditiveAttention(nn.Module):
+    ''' AttentionPooling used to weighted aggregate news vectors
+    Arg: 
+        d_h: the last dimension of input
+    '''
     def __init__(self, d_h, hidden_size=200):
         super(AdditiveAttention, self).__init__()
         self.att_fc1 = nn.Linear(d_h, hidden_size)
         self.att_fc2 = nn.Linear(hidden_size, 1)
 
     def forward(self, x, attn_mask=None):
+        """
+        Args:
+            x: batch_size, candidate_size, candidate_vector_dim
+            attn_mask: batch_size, candidate_size
+        Returns:
+            (shape) batch_size, candidate_vector_dim
+        """
         bz = x.shape[0]
         e = self.att_fc1(x)
         e = nn.Tanh()(e)
@@ -75,69 +83,3 @@ class AdditiveAttention(nn.Module):
         x = torch.bmm(x.permute(0, 2, 1), alpha)
         x = torch.reshape(x, (bz, -1))  # (bz, 400)
         return x
-
-class TextEncoder(nn.Module):
-    def __init__(self,
-                 bert_type="bert-base-uncased",
-                 word_embedding_dim=400,
-                 dropout_rate=0.2,
-                 enable_gpu=True):
-        super(TextEncoder, self).__init__()
-        self.dropout_rate = 0.2
-        self.bert = BertModel.from_pretrained(bert_type,
-                                              hidden_dropout_prob=0,
-                                              attention_probs_dropout_prob=0)
-        self.additive_attention = AdditiveAttention(self.bert.config.hidden_size,
-                                                    self.bert.config.hidden_size//2)
-        self.fc = nn.Linear(self.bert.config.hidden_size, word_embedding_dim)
-
-    def forward(self, text):
-        # text batch, 2, word
-        tokens = text[:,0,:]
-        atts = text[:,1,:]
-        text_vector = self.bert(tokens, attention_mask=atts)[0]
-        text_vector = self.additive_attention(text_vector)
-        text_vector = self.fc(text_vector)
-        return text_vector
-
-
-class UserEncoder(nn.Module):
-    def __init__(self,
-                 news_embedding_dim=400,
-                 num_attention_heads=20,
-                 query_vector_dim=200
-                ):
-        super(UserEncoder, self).__init__()
-        self.dropout_rate = 0.2
-        self.multihead_attention = MultiHeadAttention(news_embedding_dim,
-                                              num_attention_heads, 20, 20)
-        self.additive_attention = AdditiveAttention(news_embedding_dim,
-                                                    query_vector_dim)
-        
-    def forward(self, clicked_news_vecs):
-        clicked_news_vecs = F.dropout(clicked_news_vecs, p=self.dropout_rate, training=self.training)
-        multi_clicked_vectors = self.multihead_attention(
-            clicked_news_vecs, clicked_news_vecs, clicked_news_vecs
-        )
-        pos_user_vector = self.additive_attention(multi_clicked_vectors)
-        
-        user_vector = pos_user_vector
-        return user_vector
-
-class Model(nn.Module):
-    def __init__(self):
-        super(Model, self).__init__()
-        self.user_encoder = UserEncoder()
-        
-        self.criterion = nn.CrossEntropyLoss()
-    
-    def forward(self, candidate_vecs, clicked_news_vecs, targets, compute_loss=True): 
-        user_vector = self.user_encoder(clicked_news_vecs)
-        
-        score = torch.bmm(candidate_vecs, user_vector.unsqueeze(-1)).squeeze(dim=-1)
-        
-        if compute_loss:
-            loss = self.criterion(score, targets)
-            return loss, score
-        else:
-            return score

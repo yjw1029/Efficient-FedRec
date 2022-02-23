@@ -19,6 +19,11 @@ wandb
 ```
 
 ## Getting Started
+* Install opacus
+```bash
+  cd opacus
+  pip install -e .
+```
 * Download datasets 
 ```bash
 cd raw

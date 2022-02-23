@@ -6,6 +6,10 @@ amlt/
 .amltconfig
 config.yaml
 
+# opacus
+build/
+opacus.egg-info/
+
 raw/*/
 data/*
 output/

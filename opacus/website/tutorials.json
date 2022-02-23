@@ -1,0 +1,28 @@
+{
+  "Using Opacus": [
+    {
+      "id": "building_image_classifier",
+      "title": "Building image classifier with Differential Privacy"
+    },
+    {
+      "id": "building_text_classifier",
+      "title": "Building text classifier with Differential Privacy"
+    },
+    {
+      "id": "building_lstm_name_classifier",
+      "title": "Training a differentially private LSTM model for name classification"
+    },
+    {
+      "id": "intro_to_advanced_features",
+      "title": "Deep dive into advanced features of Opacus"
+    },
+    {
+      "id": "guide_to_module_validator",
+      "title": "Guide to Module Validator and Fixer"
+    },
+    {
+      "id": "guide_to_grad_sampler",
+      "title": "Guide to grad samplers"
+    }
+  ]
+}

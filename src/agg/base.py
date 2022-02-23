@@ -1,10 +1,10 @@
+import torch.optim as optim
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 from model import TextEncoder, UserEncoder
 import torch.optim as optim
 
-from data import NewsPartDataset
 
 class NewsUpdatorDataset(Dataset):
     def __init__(self, news_index, news_ids, news_grads):
@@ -19,8 +19,20 @@ class NewsUpdatorDataset(Dataset):
         nid = self.news_ids[idx]
         return self.news_index[nid], self.news_grads[idx]
 
+class NewsPartDataset(Dataset):
+    def __init__(self, news_index, nids):
+        self.news_index = news_index
+        self.nids = nids
+        
+    def __len__(self):
+        return len(self.nids)
+    
+    def __getitem__(self, idx):
+        nid = self.nids[idx]
+        return nid, self.news_index[nid]
+        
 
-class Aggregator:
+class BaseAggregator:
     def __init__(self, args, news_dataset, news_index, device):
         self.device = device
 
@@ -44,9 +56,6 @@ class Aggregator:
         
         self.news_dataset = news_dataset
         self.news_index = news_index
-        
-        self.time = 0
-        self.cnt = 0
         
         self._init_grad_param()
     
@@ -77,10 +86,6 @@ class Aggregator:
         self.update_user_grad()
         self.update_news_grad()
         self._init_grad_param()
-        self.cnt += 1
-    
-    def average_update_time(self):
-        return self.time / self.cnt
     
     def update_news_grad(self):
         self.text_encoder.train()

@@ -36,6 +36,10 @@ def evaluation_split(news_vecs, user_vecs, samples, nid2index):
         _, poss, negs, _, _ = samples[i]
         user_vec = user_vecs[i]
         y_true = [1] * len(poss) + [0] * len(negs)
+
+        if np.mean(y_true) == 0 or np.mean(y_true) == 1:
+            continue
+        
         news_ids = [nid2index[i] for i in poss + negs]
         news_vec = news_vecs[news_ids]
         y_score = np.multiply(news_vec, user_vec)

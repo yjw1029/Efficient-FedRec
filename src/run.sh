@@ -1,0 +1,1 @@
+python main.py --mode train --job_name Efficient-FedRec-MPC --run_name efficient-fedRec-mpc
