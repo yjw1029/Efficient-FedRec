@@ -16,6 +16,8 @@ transformers==4.12.5
 tqdm
 sklearn
 wandb
+pycryptodome
+cryptography
 ```
 
 ## Getting Started
@@ -50,14 +52,13 @@ python user_process.py --data adressa
 ```bash
 # You may need to configure your wandb account first
 cd src
-python main.py --data mind
-# get prediction result of the best checkpoint and submit on condalab
-python main.py --data mind --mode predict
+python main.py  --mode train --job_name Efficient-FedRec-MPC --run_name efficient-fedRec-mpc --data mind
+
 
 # train on adressa
-python main.py --data adressa --max_train_steps 500 --validation_step 10 --bert_type NbAiLab/nb-bert-base
+python main.py --mode train --job_name Efficient-FedRec-MPC --run_name efficient-fedRec-mpc --data adressa --max_train_steps 500 --validation_step 10 --bert_type NbAiLab/nb-bert-base
 # test on adressa
-python main.py --data adressa --mode test --bert_type NbAiLab/nb-bert-base
+python main.py --mode train --job_name Efficient-FedRec-MPC --run_name efficient-fedRec-mpc --data adressa --mode test --bert_type NbAiLab/nb-bert-base
 ```
 
 
